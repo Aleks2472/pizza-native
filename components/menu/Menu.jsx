@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native'
 import React, { useState } from 'react'
-import { View, Image, StyleSheet, Text, TouchableWithoutFeedback } from 'react-native'
+import { View, Image, StyleSheet, Text, TouchableWithoutFeedback, Platform } from 'react-native'
 
 export default function Menu() {
 
@@ -40,7 +40,7 @@ export default function Menu() {
 const styleMenu = StyleSheet.create({
     container: {
         width: '100%',
-        height: 90,
+        height: Platform.OS === 'ios' ? 90 : 60,
         backgroundColor: 'white',
         position: 'absolute',
         bottom: 0,

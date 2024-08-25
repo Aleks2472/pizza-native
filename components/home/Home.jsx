@@ -1,32 +1,98 @@
-import React, { useState } from 'react'
-import { View, Text, StyleSheet, Image, TextInput, FlatList, TouchableWithoutFeedback } from 'react-native'
+import React, { useState, useEffect } from 'react'
+import { View, Text, StyleSheet, Image, TextInput, FlatList, TouchableWithoutFeedback, Platform, Modal } from 'react-native'
 import { dataPizza, imageMap } from '../../data/DataPizza'
-import Menu from '../menu/Menu'
 import { useNavigation } from '@react-navigation/native'
 
 export default function Home() {
 
     const navigation = useNavigation()
+    const [searchValue, setSearchValue] = useState('')
+    const [resultSearch, setResultSearch] = useState(dataPizza)
+    const [modalOpen, setModalOpen] = useState(false)
+    const [sort, setSort] = useState(0)
+
+    const sortItem = [
+        { name: 'Популярные' },
+        { name: 'Дешевле' },
+        { name: 'Дороже' }
+    ]
 
     const openCart = (item) => {
-        navigation.navigate('PizzaPage', {item})
+        navigation.navigate('PizzaPage', { item })
     }
+
+    const searchPizza = (name) => {
+        const search = dataPizza.filter((pizza) => pizza.name.toLocaleLowerCase().includes(name.toLocaleLowerCase()))
+        setResultSearch(search)
+    }
+
+    const sortButton = (index) => {
+        setSort(index)
+        setModalOpen(false)
+    }
+
+    const openSort = () => {
+        setModalOpen(true)
+    }
+
+    useEffect(() => {
+
+        let sortPizza = [...dataPizza]
+
+        if(sort === 1) {
+            sortPizza.sort((a,b) => a.price - b.price)
+        } else if(sort === 2) {
+            sortPizza.sort((a,b) => b.price - a.price)
+        } else {
+            sortPizza.sort((a,b) => b.rating - a.rating)
+        }
+
+        setResultSearch(sortPizza)
+
+    }, [sort])
 
     return (
 
         <View style={styleHome.container}>
+            <Modal
+                animationType="slide"
+                transparent={true}
+                visible={modalOpen}>
+                <View style={styleHome.sortBackground}>
+                    <View style={styleHome.sortBlock}>
+                        {sortItem.map((item, index) => {
+                            return (
+                                <TouchableWithoutFeedback onPress={() => sortButton(index)}>
+                                    <View
+                                        key={index}
+                                        style={sort === index ? styleHome.sortButtonActive : styleHome.sortButton}>
+                                        <Text style={sort === index ? styleHome.sortTextActive : styleHome.sortText}>{item.name}</Text>
+                                    </View>
+                                </TouchableWithoutFeedback>
+                            )
+                        })}
+                    </View>
+                </View>
+            </Modal>
             <View style={styleHome.header}>
                 <TextInput
                     style={styleHome.search}
-                    placeholder='Поиск...'></TextInput>
+                    placeholder='Поиск...'
+                    value={searchValue}
+                    onChangeText={(text) => {
+                        setSearchValue(text)
+                        searchPizza(text)
+                    }}></TextInput>
                 <View style={styleHome.filter}>
-                    <View style={styleHome.button}>
-                        <Image
-                            style={styleHome.buttonImage}
-                            source={require('../../img/filter/sort.png')} />
-                        <Text
-                            style={styleHome.buttonText}>Сортировка</Text>
-                    </View>
+                    <TouchableWithoutFeedback onPress={() => openSort()}>
+                        <View style={styleHome.button}>
+                            <Image
+                                style={styleHome.buttonImage}
+                                source={require('../../img/filter/sort.png')} />
+                            <Text
+                                style={styleHome.buttonText}>{sortItem[sort].name}</Text>
+                        </View>
+                    </TouchableWithoutFeedback>
                     <View style={styleHome.button}>
                         <Image
                             style={styleHome.buttonImage}
@@ -38,7 +104,7 @@ export default function Home() {
             </View>
             <FlatList
                 style={styleHome.content}
-                data={dataPizza}
+                data={resultSearch}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <TouchableWithoutFeedback onPress={() => openCart(item)}>
@@ -64,18 +130,18 @@ const styleHome = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: 'white',
-        paddingBottom: 90
+        paddingBottom: Platform.OS === 'ios' ? 90 : 60
     },
     header: {
         width: '100%',
         backgroundColor: 'rgb(254, 95, 30)',
-        paddingTop: 70,
+        paddingTop: Platform.OS === 'ios' ? 70 : 50,
         paddingBottom: 20,
     },
     search: {
         width: '90%',
         height: 40,
-        fontSize: '15px',
+        fontSize: 15,
         paddingHorizontal: 10,
         margin: 'auto',
         borderRadius: 15,
@@ -141,5 +207,40 @@ const styleHome = StyleSheet.create({
         paddingVertical: 5,
         alignSelf: 'flex-start',
         overflow: 'hidden'
+    },
+    sortBackground: {
+        flex: 1,
+        flexDirection: 'row',
+        backgroundColor: 'rgba(0, 0, 0, 0.26)',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    sortBlock: {
+        width: '90%',
+        height: 200,
+        backgroundColor: 'white',
+        borderRadius: 25,
+        overflow: 'hidden'
+    },
+    sortButton: {
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingLeft: 15,
+
+    },
+    sortButtonActive: {
+        backgroundColor: 'rgb(254, 95, 30)',
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingLeft: 15,
+    },
+    sortText: {
+        fontSize: 17,
+    },
+    sortTextActive: {
+        color: 'white',
+        fontSize: 17
     }
 })
