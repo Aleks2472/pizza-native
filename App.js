@@ -1,15 +1,20 @@
 import { StyleSheet, Text, View } from 'react-native';
 import Loading from './components/loading/Loading';
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, createContext } from 'react'
 import * as Location from 'expo-location'
 import { NavigationContainer } from '@react-navigation/native';
 import Navigate from './components/navigate/Navigate';
+
+export const MyContext = createContext()
 
 export default function App() {
 
   const [isLoading, setIsLoading] = useState(true)
   const [location, setLocation] = useState(null)
   const [city, setCity] = useState(null)
+  const [cartPage, setCartPage] = useState([])
+
+  const valueContext = { cartPage, setCartPage }
 
   useEffect(() => {
     const loadLocation = async () => {
@@ -49,11 +54,14 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      <View style={styles.container}>
-        <Navigate></Navigate>
-      </View>
-    </NavigationContainer>
+
+    <MyContext.Provider value={valueContext}>
+      <NavigationContainer>
+        <View style={styles.container}>
+          <Navigate></Navigate>
+        </View>
+      </NavigationContainer>
+    </MyContext.Provider>
 
   );
 }

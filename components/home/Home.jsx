@@ -39,12 +39,12 @@ export default function Home() {
 
         let sortPizza = [...dataPizza]
 
-        if(sort === 1) {
-            sortPizza.sort((a,b) => a.price - b.price)
-        } else if(sort === 2) {
-            sortPizza.sort((a,b) => b.price - a.price)
+        if (sort === 1) {
+            sortPizza.sort((a, b) => a.price - b.price)
+        } else if (sort === 2) {
+            sortPizza.sort((a, b) => b.price - a.price)
         } else {
-            sortPizza.sort((a,b) => b.rating - a.rating)
+            sortPizza.sort((a, b) => b.rating - a.rating)
         }
 
         setResultSearch(sortPizza)
@@ -62,9 +62,8 @@ export default function Home() {
                     <View style={styleHome.sortBlock}>
                         {sortItem.map((item, index) => {
                             return (
-                                <TouchableWithoutFeedback onPress={() => sortButton(index)}>
+                                <TouchableWithoutFeedback onPress={() => sortButton(index)} key={index}>
                                     <View
-                                        key={index}
                                         style={sort === index ? styleHome.sortButtonActive : styleHome.sortButton}>
                                         <Text style={sort === index ? styleHome.sortTextActive : styleHome.sortText}>{item.name}</Text>
                                     </View>

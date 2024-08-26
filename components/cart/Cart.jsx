@@ -1,14 +1,21 @@
-import React from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React, { useContext } from 'react'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 import Menu from '../menu/Menu'
+import { MyContext } from '../../App'
 
 export default function Cart() {
+
+    const contextValue = useContext(MyContext)
 
     return (
 
         <View style={styleCart.container}>
-            <Text>Cart</Text>
-        </View>
+            <FlatList
+                data={contextValue.cartPage}
+                renderItem={({ item }) => (
+                    <Text>{item.name}</Text>
+                )}></FlatList>
+        </View >
 
     )
 

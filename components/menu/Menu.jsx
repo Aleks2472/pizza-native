@@ -1,8 +1,11 @@
 import { useNavigation } from '@react-navigation/native'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { View, Image, StyleSheet, Text, TouchableWithoutFeedback, Platform } from 'react-native'
+import { MyContext } from '../../App'
 
 export default function Menu() {
+
+    const contextValue = useContext(MyContext)
 
     const [activePage, setActivePage] = useState('Home')
 
@@ -23,10 +26,17 @@ export default function Menu() {
                     style={styleMenu.icon} />
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => openPage('Cart')}>
-                <Image
-                    source={activePage === 'Cart' ? require('../../img/menu/cart-active.png') :
-                        require('../../img/menu/cart.png')}
-                    style={styleMenu.icon} />
+                <View style={styleMenu.cartButton}>
+                    <Image
+                        source={activePage === 'Cart' ? require('../../img/menu/cart-active.png') :
+                            require('../../img/menu/cart.png')}
+                        style={styleMenu.icon} />
+                    {contextValue.cartPage.length > 0 ? (
+                        <View style={styleMenu.cartButtonTextBackground}>
+                            <Text style={styleMenu.cartButtonText}>{contextValue.cartPage.length}</Text>
+                        </View>
+                    ) : null}
+                </View>
             </TouchableWithoutFeedback>
             <Image
                 source={require('../../img/menu/user.png')}
@@ -52,5 +62,24 @@ const styleMenu = StyleSheet.create({
     icon: {
         width: 35,
         height: 35
+    },
+    cartButton: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    cartButtonTextBackground: {
+        minWidth: 10,
+        minHeight: 10,
+        backgroundColor: 'rgb(254, 95, 30)',
+        marginLeft: 5,
+        borderRadius: 100,
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingHorizontal: 10,
+        paddingVertical: 5
+    },
+    cartButtonText: {
+        fontSize: 18,
+        color: 'white'
     }
 })
