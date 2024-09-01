@@ -18,18 +18,20 @@ export default function Menu() {
 
     return (
 
-        <View style={styleMenu.container}>
+        <View style={[styleMenu.container, { backgroundColor: contextValue.them }]}>
             <TouchableWithoutFeedback onPress={() => openPage('Home')}>
                 <Image
                     source={activePage === 'Home' ? require('../../img/menu/home-active.png') :
-                        require('../../img/menu/home.png')}
+                        contextValue.them !== 'white' ? require('../../img/menu/home-white.png') :
+                            require('../../img/menu/home.png')}
                     style={styleMenu.icon} />
             </TouchableWithoutFeedback>
             <TouchableWithoutFeedback onPress={() => openPage('Cart')}>
                 <View style={styleMenu.cartButton}>
                     <Image
                         source={activePage === 'Cart' ? require('../../img/menu/cart-active.png') :
-                            require('../../img/menu/cart.png')}
+                            contextValue.them !== 'white' ? require('../../img/menu/cart-white.png') :
+                                require('../../img/menu/cart.png')}
                         style={styleMenu.icon} />
                     {contextValue.cartPage.length > 0 ? (
                         <View style={styleMenu.cartButtonTextBackground}>
@@ -38,9 +40,13 @@ export default function Menu() {
                     ) : null}
                 </View>
             </TouchableWithoutFeedback>
-            <Image
-                source={require('../../img/menu/user.png')}
-                style={styleMenu.icon} />
+            <TouchableWithoutFeedback onPress={() => openPage('User')}>
+                <Image
+                    source={activePage === 'User' ? require('../../img/menu/user-active.png') :
+                        contextValue.them !== 'white' ? require('../../img/menu/user-white.png') :
+                            require('../../img/menu/user.png')}
+                    style={styleMenu.icon} />
+            </TouchableWithoutFeedback>
         </View>
 
     )
@@ -51,7 +57,6 @@ const styleMenu = StyleSheet.create({
     container: {
         width: '100%',
         height: Platform.OS === 'ios' ? 90 : 60,
-        backgroundColor: 'white',
         position: 'absolute',
         bottom: 0,
         zIndex: 10,

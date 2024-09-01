@@ -6,8 +6,9 @@ import { MyContext } from '../../App'
 
 export default function PizzaPage({ route }) {
 
-    const navigate = useNavigation()
     const contextValue = useContext(MyContext)
+
+    const navigate = useNavigation()
     const { item } = route.params
     const [sizeButtonActive, setSizeButtonActive] = useState(1)
     const [doughButtonActive, setDoughButtonActive] = useState(0)
@@ -99,14 +100,14 @@ export default function PizzaPage({ route }) {
 
     return (
 
-        <View style={stylePizzaPage.container}>
+        <View style={[stylePizzaPage.container, { backgroundColor: contextValue.them }]}>
             <TouchableWithoutFeedback onPress={() => closePage()}>
                 <Image
                     source={require('../../img/close.png')}
                     style={stylePizzaPage.close}></Image>
             </TouchableWithoutFeedback>
             <ScrollView>
-                <Text style={stylePizzaPage.name}>{item.name}</Text>
+                <Text style={[stylePizzaPage.name, { color: contextValue.themText }]}>{item.name}</Text>
                 <View style={stylePizzaPage.imageBlock}>
                     <Image
                         source={imageMap[item.imageUrl]}
@@ -151,8 +152,8 @@ export default function PizzaPage({ route }) {
                                         <Image
                                             source={imageMapIngredient[item.imageUrl]}
                                             style={stylePizzaPage.ingredientImage} />
-                                        <Text style={stylePizzaPage.ingredientName}>{item.name}</Text>
-                                        <Text style={stylePizzaPage.ingredientPrice}>{item.price}тг</Text>
+                                        <Text style={[stylePizzaPage.ingredientName, { color: contextValue.themText }]}>{item.name}</Text>
+                                        <Text style={[stylePizzaPage.ingredientPrice, { color: contextValue.themText }]}>{item.price}тг</Text>
                                     </View>
                                 </TouchableWithoutFeedback>
                             )
@@ -160,7 +161,7 @@ export default function PizzaPage({ route }) {
                     </View>
                 </View>
             </ScrollView>
-            <View style={stylePizzaPage.designButtonBackgrounf}>
+            <View style={[stylePizzaPage.designButtonBackgrounf, {backgroundColor: contextValue.them}]}>
                 <TouchableWithoutFeedback onPress={() => addItemCart()}>
                     <View style={stylePizzaPage.designButton}>
                         <Text style={stylePizzaPage.designButtonText}>В корзину за {resultPrice}тг</Text>
@@ -184,7 +185,6 @@ const stylePizzaPage = StyleSheet.create({
     },
     container: {
         flex: 1,
-        backgroundColor: 'white',
         paddingTop: 60
     },
     name: {

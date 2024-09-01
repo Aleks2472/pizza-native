@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { View, Text, StyleSheet, Image, TextInput, FlatList, TouchableWithoutFeedback, Platform, Modal } from 'react-native'
 import { dataPizza, imageMap } from '../../data/DataPizza'
 import { useNavigation } from '@react-navigation/native'
+import { MyContext } from '../../App'
 
 export default function Home() {
+
+    const contextValue = useContext(MyContext)
 
     const navigation = useNavigation()
     const [searchValue, setSearchValue] = useState('')
@@ -53,19 +56,19 @@ export default function Home() {
 
     return (
 
-        <View style={styleHome.container}>
+        <View style={[styleHome.container, { backgroundColor: contextValue.them }]}>
             <Modal
                 animationType="slide"
                 transparent={true}
                 visible={modalOpen}>
                 <View style={styleHome.sortBackground}>
-                    <View style={styleHome.sortBlock}>
+                    <View style={[styleHome.sortBlock, { backgroundColor: contextValue.them }]}>
                         {sortItem.map((item, index) => {
                             return (
                                 <TouchableWithoutFeedback onPress={() => sortButton(index)} key={index}>
                                     <View
                                         style={sort === index ? styleHome.sortButtonActive : styleHome.sortButton}>
-                                        <Text style={sort === index ? styleHome.sortTextActive : styleHome.sortText}>{item.name}</Text>
+                                        <Text style={sort === index ? styleHome.sortTextActive : [styleHome.sortText, { color: contextValue.themText }]}>{item.name}</Text>
                                     </View>
                                 </TouchableWithoutFeedback>
                             )
@@ -75,29 +78,30 @@ export default function Home() {
             </Modal>
             <View style={styleHome.header}>
                 <TextInput
-                    style={styleHome.search}
+                    style={[styleHome.search, { backgroundColor: contextValue.them, color: contextValue.themText }]}
                     placeholder='Поиск...'
                     value={searchValue}
+                    placeholderTextColor={contextValue.themText}
                     onChangeText={(text) => {
                         setSearchValue(text)
                         searchPizza(text)
                     }}></TextInput>
                 <View style={styleHome.filter}>
                     <TouchableWithoutFeedback onPress={() => openSort()}>
-                        <View style={styleHome.button}>
+                        <View style={[styleHome.button, { backgroundColor: contextValue.them }]}>
                             <Image
                                 style={styleHome.buttonImage}
                                 source={require('../../img/filter/sort.png')} />
                             <Text
-                                style={styleHome.buttonText}>{sortItem[sort].name}</Text>
+                                style={[styleHome.buttonText, { color: contextValue.themText }]}>{sortItem[sort].name}</Text>
                         </View>
                     </TouchableWithoutFeedback>
-                    <View style={styleHome.button}>
+                    <View style={[styleHome.button, { backgroundColor: contextValue.them }]}>
                         <Image
                             style={styleHome.buttonImage}
                             source={require('../../img/filter/filter.png')} />
                         <Text
-                            style={styleHome.buttonText}>Фильтр</Text>
+                            style={[styleHome.buttonText, { color: contextValue.themText }]}>Фильтр</Text>
                     </View>
                 </View>
             </View>
@@ -112,9 +116,9 @@ export default function Home() {
                                 source={imageMap[item.imageUrl]}
                                 style={styleHome.cardImage}></Image>
                             <View style={styleHome.cardText}>
-                                <Text style={styleHome.cardName}>{item.name}</Text>
+                                <Text style={[styleHome.cardName, { color: contextValue.themText }]}>{item.name}</Text>
                                 <Text style={styleHome.cardDescription}>{item.description}</Text>
-                                <Text style={styleHome.cardPrice}>От {item.price}тг</Text>
+                                <Text style={[styleHome.cardPrice, { backgroundColor: contextValue.themBackgroundOpacity, color: contextValue.themText }]}>От {item.price}тг</Text>
                             </View>
                         </View>
                     </TouchableWithoutFeedback>
@@ -128,7 +132,6 @@ export default function Home() {
 const styleHome = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white',
         paddingBottom: Platform.OS === 'ios' ? 90 : 60
     },
     header: {
@@ -143,8 +146,7 @@ const styleHome = StyleSheet.create({
         fontSize: 15,
         paddingHorizontal: 10,
         margin: 'auto',
-        borderRadius: 15,
-        backgroundColor: 'white'
+        borderRadius: 15
     },
     filter: {
         flexDirection: 'row',
@@ -200,7 +202,6 @@ const styleHome = StyleSheet.create({
     },
     cardPrice: {
         fontSize: 17,
-        backgroundColor: 'rgba(0, 0, 0, 0.06)',
         borderRadius: 15,
         paddingHorizontal: 18,
         paddingVertical: 5,
@@ -217,7 +218,6 @@ const styleHome = StyleSheet.create({
     sortBlock: {
         width: '90%',
         height: 200,
-        backgroundColor: 'white',
         borderRadius: 25,
         overflow: 'hidden'
     },
